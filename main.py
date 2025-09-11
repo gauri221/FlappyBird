@@ -2,16 +2,24 @@
 import math
 import pygame, sys
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from bird import Bird
-from pipe import Pipe
+from rocket import Rocket
+from obstacle import Obstacle
 
-start_time = pygame.time.get_ticks()
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-bird = Bird(SCREEN_HEIGHT // 2)
-pipes = [Pipe(300), Pipe(500), Pipe(700), Pipe(900)]  # two pipes for continuity
+start_time = pygame.time.get_ticks()
+
+# Load background
+background = pygame.image.load("assets/space.jpg").convert_alpha()
+background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Initialize rocket
+rocket = Rocket(SCREEN_HEIGHT // 2)
+
+# Initialize obstacles
+obstacles = [Obstacle(x) for x in [400, 700, 1000]]
 
 while True:
     # Events
@@ -20,20 +28,27 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            bird.jump()
+            rocket.jump()
+
+    # Elapsed time
     elapsed_time = pygame.time.get_ticks() - start_time
 
-    # Bird update
-    bird.update(elapsed_time)
+    # Rocket update (pass elapsed_time if needed)
+    rocket.update(elapsed_time)
 
-    for pipe in pipes:
-        pipe.update()
+    # Update obstacles with elapsed_time
+    for obstacle in obstacles:
+        obstacle.update(elapsed_time)
 
-    # Draw
-    screen.fill((26, 26, 26))  
-    bird.draw(screen)
-    for pipe in pipes:
-        pipe.draw(screen)
+    # Draw everything
+    screen.blit(background, (0, 0))
+    rocket.draw(screen)
+    for obstacle in obstacles:
+        # Skip drawing near rocket in first 5 seconds
+        if elapsed_time < 5000 and obstacle.rect.x < 200:  # adjust 200 for rocket x
+            continue
+        obstacle.draw(screen)
 
+    # Refresh screen
     pygame.display.flip()
     clock.tick(FPS)
