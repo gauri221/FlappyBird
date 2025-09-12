@@ -2,8 +2,8 @@
 import math
 import pygame, sys
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from rocket import Rocket
-from obstacle import Obstacle
+from bird import Rocket
+from pipe import Obstacle
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
