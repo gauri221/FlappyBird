@@ -48,10 +48,12 @@ while True:
     bird.update(elapsed_time)
     for pipe in pipes:
         pipe.update()
-        # if bird.rect.colliderect(pipe.top_rect)  or bird.rect.colliderect(pipe.bottom_rect):
-        #     mixer.music.stop();   
-        #     mixer.music.load("assets/game_over.mp3")
-        #     mixer.music.play()
+        if bird.rect.colliderect(pipe.top_rect)  or bird.rect.colliderect(pipe.bottom_rect):
+            mixer.music.stop();   
+            mixer.music.load("assets/game_over.mp3")
+            mixer.music.play()
+            pygame.quit()
+            sys.exit()
 
 
     # Draw everything
