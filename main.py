@@ -1,5 +1,6 @@
 # main.py
 import pygame, sys
+from pygame import mixer
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from bird import Bird
 from pipe import Pipe
@@ -18,7 +19,19 @@ background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 bird = Bird(100, SCREEN_HEIGHT // 2)
 
 # Initialize pipes
-pipes = [Pipe(x) for x in [400, 700, 1000]]
+pipes = [Pipe(x, y=0) for x in [400, 700, 1000]]
+
+
+mixer.init()
+# Loading the song
+mixer.music.load("assets/Una_Paloma_Blanca.mp3")
+
+# Setting the volume
+mixer.music.set_volume(0.7)
+
+# Start playing the song
+mixer.music.play(-1) # loop indefinitely
+
 
 while True:
     # Events
@@ -35,6 +48,11 @@ while True:
     bird.update(elapsed_time)
     for pipe in pipes:
         pipe.update()
+        # if bird.rect.colliderect(pipe.top_rect)  or bird.rect.colliderect(pipe.bottom_rect):
+        #     mixer.music.stop();   
+        #     mixer.music.load("assets/game_over.mp3")
+        #     mixer.music.play()
+
 
     # Draw everything
     screen.blit(background, (0, 0))
