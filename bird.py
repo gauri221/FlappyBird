@@ -1,30 +1,26 @@
+# bird.py
 import pygame
-from settings import ROCKET_X, GRAVITY, JUMPS_STRENGTH
+from settings import GRAVITY, JUMP_STRENGTH
 
-class Rocket:
-    def __init__(self, y):
-        self.x = ROCKET_X
-        self.y = y
-        self.start_y = y   # remember original start height
-        self.velocity = 20
-        self.image = pygame.image.load("assets/rocket.png").convert_alpha()  # handles transparency
-        # Resize the image (width=50px, height=40px for example)
-        self.image = pygame.transform.scale(self.image, (50, 40))
-        self.rect = self.image.get_rect()
+class Bird:
+    def __init__(self, x, y):
+        self.image = pygame.image.load("assets/bird.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (80, 60))  # nice size
+        self.rect = self.image.get_rect(center=(x, y))
+        self.velocity = 0
 
     def update(self, elapsed_time):
         if elapsed_time < 5000:  # first 10 sec
-            dynamic_gravity=0.0001*elapsed_time + 0.2  
-        else:
-            # normal physics after 10 sec
-            dynamic_gravity = GRAVITY
+            dynamic_gravity = 0.0001 * elapsed_time
             self.velocity += dynamic_gravity
-            self.y += self.velocity
-        self.y = max(0, min(self.y, 300 - self.rect.height))  # keep rocket within screen bounds
+            self.rect.y += self.velocity
+        else:
+            dynamic_gravity = GRAVITY  # fallback to the one from settings
+            self.velocity += dynamic_gravity
+            self.rect.y += self.velocity
+
     def jump(self):
-        self.velocity = JUMPS_STRENGTH
+        self.velocity = JUMP_STRENGTH
 
     def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-
+        screen.blit(self.image, self.rect)
